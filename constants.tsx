@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, Zap, Droplets, Sparkles, Clock, Leaf } from 'lucide-react';
+import { Shield, Zap, Droplets, Sparkles, Clock, Leaf, Wind, Eraser } from 'lucide-react';
 import { Service, Testimonial, CarType } from './types';
 
 export const COLORS = {
@@ -19,51 +19,64 @@ export const CAR_TYPES: CarType[] = [
 
 export const SERVICES: Service[] = [
   {
-    id: 'quick-exterior',
-    title: 'Quick Exterior',
-    description: 'Fast, eco-friendly, and sparkling. Perfect for the professional on the move.',
-    price: 'From $25',
-    imageUrl: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&q=80&w=800',
+    id: 'body-wash',
+    title: 'Premium Body Wash',
+    description: 'The foundation of the Royal Treatment. High-pressure foam application that safely lifts road grime.',
+    price: 'From KES 250',
+    imageUrl: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&q=80&w=1200',
     features: [
-      'High-pressure pre-wash',
-      'pH-balanced foam wash',
+      'Saloon: KES 250 | SUV: KES 300',
+      'Eco-friendly foam lance',
+      'Microfiber hand wash',
       'Wheel & rim cleaning',
-      'Spot-free rinse',
-      'Express hand dry'
+      'Streak-free window finish'
     ]
   },
   {
-    id: 'comprehensive-detail',
-    title: 'Comprehensive Detail',
-    description: 'Full interior and exterior restoration. The ultimate royal treatment for your vehicle.',
-    price: 'From $150',
-    imageUrl: 'https://images.unsplash.com/photo-1601362840469-51e4d8d59085?auto=format&fit=crop&q=80&w=800',
+    id: 'vacuum-interior',
+    title: 'Vacuum & Interior',
+    description: 'Restore the inner sanctuary of your vehicle with our high-power extraction and sanitization.',
+    price: 'From KES 200',
+    imageUrl: 'https://images.unsplash.com/photo-1618223672358-111117208362?auto=format&fit=crop&q=80&w=1200',
     features: [
-      'Clay bar treatment',
-      'Machine paint correction',
-      'Premium Carnauba wax',
-      'Deep interior steam cleaning',
-      'Leather conditioning',
-      'Engine bay detailing'
+      'Vacuum: From KES 200',
+      'Seats Cleaning: KES 500',
+      'Roof Detailing: KES 1000',
+      'Crack & crevice cleaning',
+      'Deodorizing treatment'
+    ]
+  },
+  {
+    id: 'buffing-detailing',
+    title: 'Professional Buffing',
+    description: 'Professional paint correction to remove swirl marks and restore that factory-fresh gloss.',
+    price: 'From KES 3,000',
+    imageUrl: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&q=80&w=1200',
+    features: [
+      'Saloon: KES 3000 | SUV: KES 4000',
+      'Dual-action machine polish',
+      'Light scratch removal',
+      'Gloss level enhancement',
+      'Paint sealant'
     ]
   }
 ];
 
 export const EDGES = [
   {
-    title: 'State-of-the-art Tech',
-    description: 'We use the latest high-pressure systems and touchless technology for efficient cleaning.',
+    title: 'Best Services',
+    description: 'Award-winning detailing techniques tailored for every vehicle type.',
+    icon: <Sparkles className="w-8 h-8 text-orange-500" />
+  },
+  {
+    title: 'Save Time',
+    description: 'Our efficient parallel-processing bays ensure your car is ready in record time.',
+    icon: <Clock className="w-8 h-8 text-orange-500" />
+  },
+  {
+    title: 'Sparkle & Shine',
+    description: 'A finish so bright it acts as a mirror. The trademark Autovine glow.',
     icon: <Zap className="w-8 h-8 text-orange-500" />
-  },
-  {
-    title: 'Meticulous Detailing',
-    description: 'Every corner is attended to by our expert technicians with surgical precision.',
-    icon: <Shield className="w-8 h-8 text-orange-500" />
-  },
-  {
-    title: 'Water Recovery',
-    description: 'Our advanced systems recycle up to 85% of water used, protecting the environment.',
-    icon: <Droplets className="w-8 h-8 text-orange-500" />
   }
 ];
 

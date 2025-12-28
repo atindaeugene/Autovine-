@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, Car } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, Car, ExternalLink } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const mapsUrl = "https://maps.app.goo.gl/M9tskqD97hY4d9yt8";
 
   return (
     <footer id="footer" className="bg-[#00050a] pt-24 pb-12 border-t border-zinc-900">
@@ -56,11 +57,11 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-1">
             <h4 className="text-white font-bold uppercase tracking-widest text-xs mb-8">Contact Us</h4>
             <div className="space-y-6">
-              <a href="mailto:auto@autovine.co.ke" className="flex items-center gap-4 group">
+              <a href="mailto:autovinewash@gmail.com" className="flex items-center gap-4 group">
                 <div className="w-10 h-10 rounded-xl glossy-black border border-zinc-800 flex items-center justify-center group-hover:border-orange-500 transition-colors">
                   <Mail className="w-4 h-4 text-orange-500" />
                 </div>
-                <div className="text-sm text-zinc-400 group-hover:text-white transition-colors">auto@autovine.co.ke</div>
+                <div className="text-sm text-zinc-400 group-hover:text-white transition-colors">autovinewash@gmail.com</div>
               </a>
               <a href="tel:0700654068" className="flex items-center gap-4 group">
                 <div className="w-10 h-10 rounded-xl glossy-black border border-zinc-800 flex items-center justify-center group-hover:border-orange-500 transition-colors">
@@ -68,15 +69,24 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="text-sm text-zinc-400 group-hover:text-white transition-colors">0700 654068</div>
               </a>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl glossy-black border border-zinc-800 flex items-center justify-center flex-shrink-0">
+              <a 
+                href={mapsUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-start gap-4 group cursor-pointer"
+              >
+                <div className="w-10 h-10 rounded-xl glossy-black border border-zinc-800 flex items-center justify-center flex-shrink-0 group-hover:border-orange-500 transition-colors">
                   <MapPin className="w-4 h-4 text-orange-500" />
                 </div>
-                <div className="text-sm text-zinc-400 leading-relaxed">
-                  Utawala Road, <br />
+                <div className="text-sm text-zinc-400 leading-relaxed group-hover:text-white transition-colors">
+                  Autovine Wash, Utawala Road <br />
+                  Opposite Komarock Modern Hospital <br />
                   Nairobi, Kenya
+                  <span className="flex items-center gap-1 text-[10px] text-orange-500 font-bold uppercase mt-1 tracking-widest group-hover:underline">
+                    View on Maps <ExternalLink className="w-2.5 h-2.5" />
+                  </span>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
         </div>

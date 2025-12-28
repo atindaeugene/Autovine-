@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Play } from 'lucide-react';
+import { ChevronRight, Play, Sparkles, Clock, ShieldCheck, Hexagon } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
@@ -10,10 +10,10 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1552933529-e359b2477262?auto=format&fit=crop&q=80&w=2000"
-          alt="Luxury car with water beads"
-          className="w-full h-full object-cover grayscale-[0.2]"
+          alt="Foam wash detailing at Autovine"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#000814] via-[#000814]/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#000814] via-[#000814]/85 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#000814] via-transparent to-transparent"></div>
       </div>
 
@@ -24,17 +24,39 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.3em] uppercase text-orange-500 bg-orange-500/10 border border-orange-500/20 rounded-full">
-              Premium Automotive Detailing
-            </span>
+            <div className="flex items-center gap-4 mb-6">
+              <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-[0.3em] uppercase text-orange-500 bg-orange-500/10 border border-orange-500/20 rounded-full">
+                Autovine Wash
+              </span>
+              <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest italic">Sparkle & Shine</span>
+            </div>
+            
             <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] font-serif silver-text">
               Give Your Vehicle <br />
-              <span className="italic">The Royal Treatment</span>
+              <span className="italic text-orange-500">The Royal Treatment</span>
             </h1>
+            
             <p className="text-xl text-zinc-300 mb-10 leading-relaxed max-w-2xl font-light">
-              Experience the perfect fusion of cutting-edge technology and 
-              meticulous hand-detailing. Luxury quality, delivered with modern speed.
+              Nairobi's premier destination for high-tech foam washing, 
+              precision buffing, and meticulous interior vacuuming.
             </p>
+
+            {/* Quick Stats Grid with Hexagon Icons */}
+            <div className="flex flex-wrap gap-8 mb-12">
+              {[
+                { label: 'Best Services', icon: <Sparkles className="w-4 h-4" /> },
+                { label: 'Save Time', icon: <Clock className="w-4 h-4" /> },
+                { label: 'Body Wash', icon: <ShieldCheck className="w-4 h-4" /> }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="relative w-10 h-10 flex items-center justify-center">
+                    <Hexagon className="absolute inset-0 text-orange-600 fill-orange-600/20 w-full h-full" />
+                    <div className="relative z-10 text-white">{item.icon}</div>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">{item.label}</span>
+                </div>
+              ))}
+            </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <a
@@ -61,20 +83,9 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats Overlay */}
-      <div className="absolute bottom-12 right-0 hidden lg:block pr-6">
-        <div className="flex gap-16 border-l border-zinc-800 pl-12 py-4">
-          {[
-            { label: 'Wait Time', value: '15 Min' },
-            { label: 'Satisfaction', value: '100%' },
-            { label: 'Eco-Saved', value: '45k Liters' }
-          ].map((stat, idx) => (
-            <div key={idx}>
-              <div className="text-3xl font-bold mb-1 silver-text">{stat.value}</div>
-              <div className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+      {/* Background Decor inspired by first image */}
+      <div className="absolute top-1/4 right-0 opacity-10 pointer-events-none hidden lg:block">
+        <Hexagon className="w-[600px] h-[600px] text-zinc-700" />
       </div>
     </div>
   );

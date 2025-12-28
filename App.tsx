@@ -10,6 +10,7 @@ import EcoSection from './components/EcoSection';
 import Testimonials from './components/Testimonials';
 import LoyaltyProgram from './components/LoyaltyProgram';
 import Footer from './components/Footer';
+import VoiceAssistant from './components/VoiceAssistant';
 
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -54,6 +55,7 @@ const App: React.FC = () => {
         </section>
       </main>
 
+      <VoiceAssistant />
       <Footer />
     </div>
   );

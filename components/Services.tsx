@@ -23,7 +23,7 @@ const Services: React.FC = () => {
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-2 lg:gap-12 gap-8">
           {SERVICES.map((service, idx) => (
             <motion.div
               key={service.id}
@@ -65,9 +65,14 @@ const Services: React.FC = () => {
                   ))}
                 </ul>
 
-                <button className="mt-auto w-full py-5 border border-zinc-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-orange-600 hover:border-orange-600 transition-all shadow-lg hover:shadow-orange-900/20">
+                <a 
+                  href="https://wa.me/254700654068"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto w-full py-5 border border-zinc-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-orange-600 hover:border-orange-600 transition-all shadow-lg hover:shadow-orange-900/20 text-center"
+                >
                   Book This Service
-                </button>
+                </a>
               </div>
             </motion.div>
           ))}
@@ -75,7 +80,15 @@ const Services: React.FC = () => {
 
         <div className="mt-20 text-center">
           <p className="text-zinc-500 text-sm">
-            Need something custom? <a href="#" className="text-orange-500 underline font-bold underline-offset-4 ml-1">Contact our specialists</a> for bespoke detailing packages.
+            Need something custom? 
+            <a 
+              href="https://wa.me/254700654068" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-orange-500 underline font-bold underline-offset-4 ml-1 hover:text-orange-400 transition-colors"
+            >
+              Contact our specialists
+            </a> for bespoke detailing packages.
           </p>
         </div>
       </div>

@@ -1,28 +1,57 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Crown, Gift, Zap, Star, Sparkle, ArrowRight, Check, Car, Search, Loader2, Calendar, TrendingUp, Share2, Droplets } from 'lucide-react';
+import { Crown, Gift, Zap, Star, ArrowRight, Check, Car, Loader2, Calendar, TrendingUp, Share2, Droplets, Phone, Coins, History } from 'lucide-react';
 
 const LoyaltyProgram: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
   const [isSignedUp, setIsSignedUp] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [mode, setMode] = useState<'join' | 'check'>('join');
+  
+  // Logic states
+  const [points, setPoints] = useState(0);
+  const [currentWashes, setCurrentWashes] = useState(0);
+  const totalWashes = 5;
+  const POINTS_PER_KES_100 = 1;
+  const REDEMPTION_COST = 500; // Cost for a "Premium Wax" reward
 
   const handleAction = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!whatsappNumber) return;
 
     if (mode === 'join') {
       setIsSignedUp(true);
+      setPoints(50); // Welcome points
+      setCurrentWashes(0);
     } else {
       setIsSearching(true);
       // Simulate API lookup
       setTimeout(() => {
         setIsSearching(false);
         setShowProgress(true);
+        // Mock data for a returning user
+        setPoints(380); 
+        setCurrentWashes(3);
       }, 1500);
+    }
+  };
+
+  const simulateWash = (kesAmount: number) => {
+    const earned = Math.floor(kesAmount / 100) * POINTS_PER_KES_100;
+    setPoints(prev => prev + earned);
+    if (currentWashes < totalWashes) {
+      setCurrentWashes(prev => prev + 1);
+    }
+  };
+
+  const handleRedeem = () => {
+    if (points >= REDEMPTION_COST) {
+      setPoints(prev => prev - REDEMPTION_COST);
+      alert('Reward Redeemed! 500 Points deducted. Show this to the attendant.');
+    } else {
+      alert(`You need ${REDEMPTION_COST - points} more points to redeem this reward.`);
     }
   };
 
@@ -30,7 +59,7 @@ const LoyaltyProgram: React.FC = () => {
     const shareData = {
       title: 'Autovine Wash - Royal Circle',
       text: showProgress 
-        ? `I just checked my status at Autovine Wash! I'm a Silver Member with 3/5 washes completed toward my next reward. Join the Royal Circle today!`
+        ? `I have ${points} Crown Points at Autovine Wash! Join the Royal Circle today via WhatsApp!`
         : `I just joined the Royal Circle at Autovine Wash! Get the royal treatment for your car and earn rewards with every wash.`,
       url: window.location.href,
     };
@@ -39,7 +68,6 @@ const LoyaltyProgram: React.FC = () => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback: Copy to clipboard
         await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         alert('Offer details copied to clipboard!');
       }
@@ -52,12 +80,10 @@ const LoyaltyProgram: React.FC = () => {
     setIsSignedUp(false);
     setShowProgress(false);
     setMode('join');
-    setEmail('');
+    setWhatsappNumber('');
+    setPoints(0);
+    setCurrentWashes(0);
   };
-
-  // Explicitly type currentWashes and totalWashes as number to avoid TypeScript errors when comparing with literal types.
-  const currentWashes: number = showProgress ? 3 : 0;
-  const totalWashes: number = 5;
 
   return (
     <div id="loyalty" className="py-32 bg-[#000814] relative overflow-hidden">
@@ -77,22 +103,22 @@ const LoyaltyProgram: React.FC = () => {
             </div>
             <h2 className="text-4xl md:text-5xl font-serif silver-text mb-8 leading-tight">
               Elite Status <br /> 
-              For Your Vehicle
+              Via WhatsApp
             </h2>
             <p className="text-zinc-400 text-lg mb-10 leading-relaxed">
               {mode === 'join' 
-                ? 'Join our exclusive loyalty program and earn "Crown Points" with every visit. Luxury car care is now an investment.' 
-                : 'Enter your registered email to view your current progress, available rewards, and membership tier.'}
+                ? 'Join our exclusive loyalty program using your WhatsApp number. Earn 1 Crown Point for every KES 100 spent and unlock premium rewards.' 
+                : 'Enter your registered WhatsApp number to view your current points balance and reward progress.'}
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 mb-12">
               {[
-                { title: 'Points for Every $1', icon: <Star className="w-5 h-5" /> },
-                { title: '5th Wash 50% Off', icon: <Gift className="w-5 h-5" /> },
+                { title: `Earn 1pt / KES 100`, icon: <Coins className="w-5 h-5" /> },
+                { title: 'Free Wax @ 500pts', icon: <Gift className="w-5 h-5" /> },
                 { title: 'Priority Scheduling', icon: <Zap className="w-5 h-5" /> },
-                { title: 'Birthday Detail', icon: <Sparkle className="w-5 h-5" /> }
+                { title: 'WhatsApp Alerts', icon: <Phone className="w-5 h-5" /> }
               ].map((benefit, i) => (
-                <div key={i} className="flex items-center gap-4 p-5 rounded-2xl glossy-black border border-zinc-800">
+                <div key={i} className="flex items-center gap-4 p-5 rounded-2xl glossy-black border border-zinc-800 hover:border-zinc-700 transition-colors">
                   <div className="w-10 h-10 rounded-full bg-orange-950/20 flex items-center justify-center text-orange-500">
                     {benefit.icon}
                   </div>
@@ -111,14 +137,17 @@ const LoyaltyProgram: React.FC = () => {
                     exit={{ opacity: 0, y: -10 }}
                   >
                     <form onSubmit={handleAction} className="flex flex-col sm:flex-row gap-4 max-w-md mb-4">
-                      <input
-                        type="email"
-                        placeholder={mode === 'join' ? "Enter email to join" : "Enter your email"}
-                        className="flex-grow px-6 py-4 rounded-xl bg-zinc-900/60 border border-zinc-800 text-white focus:outline-none focus:border-orange-500 transition-colors"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
+                      <div className="relative flex-grow">
+                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+                        <input
+                          type="tel"
+                          placeholder={mode === 'join' ? "WhatsApp Number" : "Enter number"}
+                          className="w-full pl-12 pr-6 py-4 rounded-xl bg-zinc-900/60 border border-zinc-800 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                          value={whatsappNumber}
+                          onChange={(e) => setWhatsappNumber(e.target.value)}
+                          required
+                        />
+                      </div>
                       <button 
                         type="submit"
                         disabled={isSearching}
@@ -135,10 +164,10 @@ const LoyaltyProgram: React.FC = () => {
                       onClick={() => setMode(mode === 'join' ? 'check' : 'join')}
                       className="text-xs font-bold uppercase tracking-widest text-zinc-500 hover:text-orange-500 transition-colors"
                     >
-                      {mode === 'join' ? 'Already a member? Check Status' : 'New here? Join the Royal Circle'}
+                      {mode === 'join' ? 'Already a member? Check Status' : 'New here? Join with WhatsApp'}
                     </button>
                   </motion.div>
-                ) : isSignedUp ? (
+                ) : (
                   <motion.div 
                     key="success"
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -149,70 +178,26 @@ const LoyaltyProgram: React.FC = () => {
                       <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-black shadow-lg">
                         <Check className="w-4 h-4" />
                       </div>
-                      Welcome to the Royal Circle! Your membership is active.
+                      {isSignedUp ? 'Welcome to the Royal Circle!' : 'Welcome back, Royal Member!'}
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-center gap-4">
                       <a 
-                        href="#services"
+                        href={`https://wa.me/254700654068?text=Hello%20Autovine!%20My%20number%20is%20${whatsappNumber}.%20I%20have%20${points}%20points%20and%20I'd%20like%20to%20book%20my%20next%20session.`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all shadow-[0_0_40px_rgba(249,115,22,0.3)] hover:shadow-[0_0_60px_rgba(249,115,22,0.5)] hover:-translate-y-1 active:scale-95 group relative overflow-hidden"
                       >
                         <Calendar className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                        Book Your Next Treatment
+                        Book Your Next Appointment
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                       </a>
                       <button 
-                        onClick={handleShare}
+                        onClick={resetView}
                         className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-5 border border-zinc-800 text-zinc-500 hover:text-white hover:border-zinc-600 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all"
                       >
-                        <Share2 className="w-4 h-4" />
-                        Share Offer
+                        Logout
                       </button>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="checked"
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className="space-y-8"
-                  >
-                    <div className="flex flex-col gap-6">
-                      <div className="flex items-center gap-3 text-zinc-400 text-sm">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,1)]"></div>
-                        Showing results for <span className="text-white font-bold underline decoration-orange-500 underline-offset-4">{email}</span>
-                      </div>
-                      
-                      <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <a 
-                          href="#services"
-                          className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all shadow-[0_0_40px_rgba(249,115,22,0.3)] hover:shadow-[0_0_60px_rgba(249,115,22,0.5)] hover:-translate-y-1 active:scale-95 group relative overflow-hidden"
-                        >
-                          <Calendar className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                          Book Appointment Now
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
-                        </a>
-                        <button 
-                          onClick={handleShare}
-                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-5 border border-zinc-800 text-zinc-500 hover:text-white hover:border-zinc-600 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all"
-                        >
-                          <Share2 className="w-4 h-4" />
-                          Share My Status
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-orange-500/60">
-                          <TrendingUp className="w-3 h-3" />
-                          Exclusive Member Pricing Applied
-                        </div>
-                        <button 
-                          onClick={resetView}
-                          className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 hover:text-white transition-colors"
-                        >
-                          Switch Account
-                        </button>
-                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -226,12 +211,12 @@ const LoyaltyProgram: React.FC = () => {
             viewport={{ once: true }}
             className="relative"
           >
-            {/* Visual Reward Card Card */}
-            <div className={`relative z-10 p-10 rounded-[2.5rem] bg-gradient-to-br from-[#001F3F] via-[#000814] to-[#000814] border transition-all duration-700 ${showProgress ? 'border-orange-500 shadow-[0_40px_100px_rgba(249,115,22,0.2)] scale-105' : 'border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)]'}`}>
+            {/* Visual Reward Card */}
+            <div className={`relative z-10 p-10 rounded-[2.5rem] bg-gradient-to-br from-[#001F3F] via-[#000814] to-[#000814] border transition-all duration-700 ${(showProgress || isSignedUp) ? 'border-orange-500 shadow-[0_40px_100px_rgba(249,115,22,0.2)] scale-105' : 'border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)]'}`}>
               
-              {showProgress && (
+              {(showProgress || isSignedUp) && (
                 <div className="absolute -top-4 -right-4 bg-orange-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-tighter animate-bounce shadow-lg">
-                  Verified Member
+                  {points > 500 ? 'Gold Status' : 'Silver Member'}
                 </div>
               )}
 
@@ -240,104 +225,85 @@ const LoyaltyProgram: React.FC = () => {
                   <Car className="text-white w-8 h-8" />
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold uppercase tracking-[0.3em] text-orange-500 mb-1">Status</div>
-                  <div className="text-2xl font-serif silver-text">
-                    {showProgress ? 'Silver Member' : 'Tier Unlocked'}
+                  <div className="text-xs font-bold uppercase tracking-[0.3em] text-orange-500 mb-1">Crown Points</div>
+                  <div className="text-3xl font-serif silver-text font-black">
+                    {points.toLocaleString()}
                   </div>
                 </div>
               </div>
 
-              {/* Enhanced Progress Visualization */}
-              <div className="mb-12">
-                <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-zinc-500 mb-6">
-                  <span>Wash Reward Progress</span>
-                  <span className="text-white">{currentWashes} / {totalWashes} Washes</span>
+              {/* Points Progress Bar */}
+              <div className="mb-8">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">
+                  <span>Next Reward: Premium Wax</span>
+                  <span>{points} / {REDEMPTION_COST} pts</span>
                 </div>
-                
-                <div className="flex justify-between items-center gap-2">
+                <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min((points / REDEMPTION_COST) * 100, 100)}%` }}
+                    className="h-full bg-gradient-to-r from-orange-600 to-orange-400 shadow-[0_0_10px_rgba(249,115,22,0.5)]"
+                  />
+                </div>
+                {points >= REDEMPTION_COST && (
+                  <button 
+                    onClick={handleRedeem}
+                    className="mt-4 w-full py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-emerald-600 hover:text-white transition-all"
+                  >
+                    Redeem Reward Now
+                  </button>
+                )}
+              </div>
+
+              {/* Wash Stamp Progress */}
+              <div className="mb-10">
+                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">
+                  <span>Visit Loyalty Stamped</span>
+                  <span className="text-white">{currentWashes} / {totalWashes}</span>
+                </div>
+                <div className="grid grid-cols-5 gap-3">
                   {[...Array(totalWashes)].map((_, i) => {
                     const isActive = i < currentWashes;
-                    const isNext = i === currentWashes && showProgress;
                     return (
-                      <div key={i} className="flex-1 relative group">
-                        <motion.div
-                          initial={false}
-                          animate={{
-                            backgroundColor: isActive ? 'rgba(249, 115, 22, 0.15)' : 'rgba(24, 24, 27, 0.4)',
-                            borderColor: isActive ? 'rgba(249, 115, 22, 0.5)' : 'rgba(39, 39, 42, 1)',
-                            scale: isActive ? 1.05 : 1
-                          }}
-                          className={`aspect-square rounded-2xl border flex flex-col items-center justify-center transition-all duration-500 relative overflow-hidden ${isNext ? 'border-dashed border-orange-500/50 animate-pulse' : ''}`}
-                        >
-                          {isActive ? (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ type: 'spring', damping: 12 }}
-                            >
-                              <Droplets className="w-6 h-6 text-orange-500" />
-                            </motion.div>
-                          ) : (
-                            <Droplets className="w-6 h-6 text-zinc-700" />
-                          )}
-                          
-                          {/* Fill Indicator */}
-                          {isActive && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange-500 shadow-[0_-4px_10px_rgba(249,115,22,0.5)]" />
-                          )}
-
-                          {isNext && (
-                            <div className="absolute top-1 right-1">
-                              <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
-                            </div>
-                          )}
-                        </motion.div>
-                        {/* Connecting Line */}
-                        {i < totalWashes - 1 && (
-                          <div className={`absolute top-1/2 -right-1 w-2 h-[1px] z-0 ${i < currentWashes - 1 ? 'bg-orange-500/50' : 'bg-zinc-800'}`} />
+                      <div key={i} className={`aspect-square rounded-2xl border flex items-center justify-center transition-all duration-500 ${isActive ? 'bg-orange-600/20 border-orange-500 shadow-[inset_0_0_10px_rgba(249,115,22,0.2)]' : 'bg-zinc-900/50 border-zinc-800 opacity-30'}`}>
+                        {isActive ? (
+                          <Droplets className="w-5 h-5 text-orange-500" />
+                        ) : (
+                          <span className="text-zinc-800 font-black text-sm">{i + 1}</span>
                         )}
                       </div>
                     );
                   })}
-                  
-                  {/* Reward Icon */}
-                  <div className="ml-2 flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-700 ${currentWashes === totalWashes ? 'bg-orange-500 border-orange-400' : 'bg-zinc-900 border-zinc-800'}`}>
-                      <Gift className={`w-6 h-6 ${currentWashes === totalWashes ? 'text-white' : 'text-zinc-600'}`} />
-                    </div>
-                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 gap-3 mb-10">
-                {[1, 2, 3, 4, 5].map((stamp) => {
-                  const isActive = showProgress && stamp <= 3;
-                  return (
-                    <div key={stamp} className={`aspect-square rounded-2xl border flex items-center justify-center transition-all duration-500 ${isActive ? 'bg-orange-600/20 border-orange-500 shadow-[inset_0_0_10px_rgba(249,115,22,0.2)]' : 'bg-zinc-900/50 border-zinc-800 opacity-30'}`}>
-                      {isActive ? (
-                        <Crown className="w-6 h-6 text-orange-400" />
-                      ) : (
-                        <span className="text-zinc-800 font-black text-xl">{stamp}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <button className="w-full py-5 rounded-2xl glossy-black border border-zinc-800 flex items-center justify-center gap-4 group hover:border-orange-500/50 transition-all">
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 group-hover:text-white">Dashboard Login</span>
-                <ArrowRight className="w-4 h-4 text-orange-500 group-hover:translate-x-1 transition-transform" />
-              </button>
+              {/* Actions for simulation (In a real app, these would happen after a purchase) */}
+              {(isSignedUp || showProgress) && (
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => simulateWash(1000)}
+                    className="py-4 rounded-2xl glossy-black border border-zinc-800 flex flex-col items-center justify-center gap-1 group hover:border-orange-500/50 transition-all"
+                  >
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500 group-hover:text-orange-500 transition-colors">Record Wash</span>
+                    <span className="text-[10px] font-bold text-white uppercase">+10 pts</span>
+                  </button>
+                  <button 
+                    onClick={handleShare}
+                    className="py-4 rounded-2xl glossy-black border border-zinc-800 flex flex-col items-center justify-center gap-1 group hover:border-orange-500/50 transition-all"
+                  >
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500 group-hover:text-orange-500 transition-colors">Share Rewards</span>
+                    <Share2 className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Accent Elements */}
-            <div className={`absolute -top-10 -right-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl transition-opacity duration-1000 ${showProgress ? 'opacity-100 animate-pulse' : 'opacity-20'}`}></div>
-            <div className={`absolute -bottom-10 -left-10 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl transition-opacity duration-1000 ${showProgress ? 'opacity-100' : 'opacity-20'}`}></div>
+            <div className={`absolute -top-10 -right-10 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl transition-opacity duration-1000 ${(showProgress || isSignedUp) ? 'opacity-100 animate-pulse' : 'opacity-20'}`}></div>
           </motion.div>
         </div>
       </div>
       
-      {/* CSS Animation for Shimmer */}
       <style>{`
         @keyframes shimmer {
           0% { transform: translateX(-100%); }
