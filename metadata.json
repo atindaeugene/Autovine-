@@ -1,0 +1,7 @@
+{
+  "name": "Autovine Wash - Premium Car Care",
+  "description": "A high-end, professional website for Autovine Wash, offering the royal treatment in car care through high-tech efficiency and meticulous manual detailing.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
